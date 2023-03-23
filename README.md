@@ -3,11 +3,12 @@
 ## [2023-03-23, 4주차 수업 내용]
 
 ### <JSX(JavaScript XML)>
-JSX -- https://ko.reactjs.org/docs/introducing-jsx.html  
-JSX 문법 => 자바스크립트의 확장문법
+JSX란? 자바스크립트와 XML/HTML을 함께 사용할 수 있는 자바스크립트 확장 문법
+* JSX알려주는 React사이트  
+https://ko.reactjs.org/docs/introducing-jsx.html
 
-### jsx의 역할
-1. jsx 내부적으로 xml/html 코드를 자바스크립트로 변환
+### JSX의 역할
+1. JSX 내부적으로 xml/html 코드를 자바스크립트로 변환
 2. React가 creatElement함수를 사용하여 자동으로 자바스크립트로 변환해준다.
 3. js작업할 경우 createElement함수를 사용해야 한다.
 4. JSX는 가독성을 높여 주는 역할을 한다.
@@ -28,8 +29,59 @@ JSX 문법 => 자바스크립트의 확장문법
 중괄호 사이에 자바스크립트 코드를 넣으면 됨  
 ``` const elemet = <img src={user.avatarUrl}></img> ```  
 
----
+### (실습) JSX 코드 작성해보기
+1. create-react-app으로 만든 프로젝트를 VSCode로 연다
+2. src 디렉토리에 'chapter_03'이라는 디렉토리를 생성한다
+3. 생성한 디렉토리에 Book.jsx라는 파일을 생성한다
+4. 이 파일에 다음과 같이 코딩한다  
 
+Book.jsx
+```
+import React from "react"
+
+function Book(props) {
+  return (
+    <div>
+      <h1>{`이 책의 이름은 ${props.name}입니다.`}</h1>
+      <h2>{`이 책은 총 ${props.numOfPage}페이지로 이루어져있습니다.`}</h2>
+    </div>
+  )
+}
+
+export default Book
+```
+Library.jsx
+```
+import React from "react"
+
+function Book(props) {
+  return (
+    <div>
+      <h1>{`이 책의 이름은 ${props.name}입니다.`}</h1>
+      <h2>{`이 책은 총 ${props.numOfPage}페이지로 이루어져있습니다.`}</h2>
+    </div>
+  )
+}
+
+export default Book
+```
+### 코드 작성후
+
+1. 프로젝트 root의 index.js 파일을 오픈한다.
+2. Library컴포넌트를 import한다.
+3. render함수에서 App을 Library 컴포넌트로 수정한다
+4. 이제 npm start로 app을 실행하고 결과를 확인한다
+
+index.js
+```
+import Library from './chapter_03/Library'; // 2. Library 컨포넌트 import
+
+
+<React.StrictMode>
+    <Library /> // 3. render함수에서 App을 Library 컴포넌트로 수정
+  </React.StrictMode>
+```
+---
 ## [2023-03-16, 3주차 수업 내용]
 
 ### <README.md 작성요령> (파일 이름은 대문자)
