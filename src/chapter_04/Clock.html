@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- 실행 스크립트-->
+  <script type="text/babel">
+    function tick() {
+  const element = (
+    <div>
+      <h1>Tick</h1>
+      <h2>현재 시간: {new Date().toLocaleTimeString()}</h2>
+    </div>
+  );
+
+  ReactDOM.render(element, document.getElementById('root'));  
+  // React 엘리먼트는 불변객체로, 엘리먼트를 생성한 이후에는 해당 엘리먼트의 자식이나 속성을 변경할 수 없다.
+  // UI를 업데이트하기 위해 새로운 엘리먼트를 생성하고 이를 ReactDOM.render()로 전달해줘야 함
+}
+
+setInterval(tick, 1000);
+  </script>
+  
+</body>
+</html>
