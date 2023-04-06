@@ -1,4 +1,189 @@
 # 이재형
+## [2023-04-06, 6주차 수업 내용]
+
+### <컴포넌트 추출>
+* 복잡한 컴포넌트를 쪼개서 여러 개의 컴포넌트로 나눌 수 있다
+* 큰 컴포넌트에서 일부를 추출해서 새로운 컴포넌트를 만드는 것이다.
+  - 실무에서는 처음부터 1개의 컴포넌트에 하나의 기능만 사용하도록 설계하는게 좋다
+
+### <컴포넌트 작성>
+Comment.jsx
+```js
+import React from "react";
+
+const styles = {
+  wrapper: {
+      margin: 8,
+      padding: 8,
+      display: "flex",
+      flexDirection: "row",
+      border: "1px solid grey",
+      borderRadius: 16,
+  },
+  imageContainer: {},
+  image: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+  },
+  contentContainer: {
+      marginLeft: 8,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+  },
+  nameText: {
+      color: "black",
+      fontSize: 16,
+      fontWeight: "bold",
+  },
+  commentText: {
+      color: "black",
+      fontSize: 16,
+  },
+};
+
+function Comment(props) {
+  return (
+    <div style={styles.wrapper}>
+      <div style={styles.imageContainer}>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
+          alt="프로필 이미지"
+          style={styles.image}
+        />
+      </div>
+      <div style={styles.contentContainer}>
+        <span style={styles.nameText}>이재형</span>
+        <span style={styles.nameText}>
+          내가 만든 첫 컴포넌트
+          </span>
+      </div>
+    </div>
+  );
+}
+
+export default Comment;
+```
+Comment 컴포넌트를 위와 같이 작성할 수 있다.  
+html적인 요소들은
+```js
+function Comment(props) {
+  return (
+
+      );
+}
+```
+이 안에 넣어주고 css는 이 밖에 작성해주면 된다.  
+컴포넌트가 작성되었으면 이 컴포넌트를 CommentList에 불러와야한다.  
+CommentList.jsx
+```js
+import React from "react";
+import Comment from "./Comment";
+
+function CommentList(props) {
+  return(
+    <div>
+      <Comment/>
+    </div>
+  );
+}
+
+export default CommentList;
+```
+import Comment from "./Comment"; 로 Comment를 import해준다.  
+Comment를 리스트로 작성하면 아래와 같다.
+
+CommentList.js
+```js
+import React from "react";
+import Comment from "./Comment";
+
+const comments = [
+  {
+    name: "이재형",
+    comment: "안녕하세요. 이재형입니다.",
+  },
+  {
+    name: "이재형",
+    comment: "안녕하세요. 이재형입니다.",
+  },
+  {
+    name: "이재형",
+    comment: "안녕하세요. 이재형입니다.",
+  },
+];
+
+
+function CommentList(props) {
+  return(
+    <div>
+      {comments.map((comment) => {
+        return (
+          <Comment name={comment.name} comment={comment.comment}/>
+        );
+      })}
+    </div>
+  );
+}
+
+export default CommentList;
+```
+
+
+
+### <state에 대해>
+### 1. state란?
+ * state는 리액트 컴포넌트의 상태를 의미한다.
+ * 상태의 의미는 정상인지 비정상인지가 아니라 컴포넌트의 데이터를 의미한다.
+ * 정확히는 컴포넌트의 변경가능한 데이터를 의미한다.
+ * State가 변하면 다시 렌더링이 되기 때문에 렌더링과 관련된 값만 state에 포함시켜야 한다.
+
+ ### 2. state의 특징
+ * 리액트 만의 특별한 형태가 아닌 단지 자바스크립트 객체일 뿐입니다.
+ * 예시 코드의 LikeButton은 class 컴포넌트이다.
+ * constructor는 생성자이고 그 안에 있는
+ * this.state가 현 컴포넌트의 state이다.  
+-- 함수형에서는 useState()라는 함수 사용한다.
+
+CommentList.jsx
+ ```js
+class LikeButton extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      liked: false
+    }
+  }
+}
+ ```
+* state는 변경이 가능하다고 했지만 직접 수정해서는 안된다
+* 불가능하다고 생각하는 것이 좋다
+* state를 변경하고자 할 때는 setstate()함수를 사용한다.
+
+예시)
+```js
+// state를 직접 수정(잘못된 사용법)
+this.state(
+  name:'Inje'
+);
+
+//setState 함수를 통한 수정 (정상적인 사용법)
+this.setState({
+  neame: 'Inje'
+});
+```
+
+### <생명주기에 대해 알아보기>
+* 생명주기는 컴포넌트의 생성 시점, 사용 시점, 종료 시점을 나타내는 것이다.
+* 생성 직후 componentDidMount()함수가 호출된다.
+* 컴포넌트가 소멸하기 전까지 여러번 랜더링 한다.
+* 렌더링은 props, setState(), forceUpdate()에 의해 상태가 변경되면 이루어진다.
+* 그리고 렌더링이 끝나면 componentDidUpdate() 함수가 호출된다.
+* 마지막으로 컴포넌트가 언마운트 되면 componentWillUnmount() 함수가 호출된다.
+
+---
 
 ## [2023-03-30, 5주차 수업 내용]
 
@@ -18,7 +203,7 @@
 * 이 객체는 마음대로 변경할 수 없는 불변성을 갖고 있다.
 
 버튼을 나타내기 위한 엘리먼트의 예
-```
+```js
 <button class='bg-green'>
   <b>
     Hello, element!
@@ -29,7 +214,7 @@
   * 리액트 엘리먼트의 예를 보면 type에 태그 대신 리액트 컴포넌트가 들어가있는 것 외에는 차이가 없다는 것을 알 수 있다.  
   * 이 역시 자바스크립트 객체이다.  
 
-```
+```js
 <button class='bg-green'>
   <b>
     Hello, element!
@@ -41,7 +226,7 @@
   
 다음 코드는 Button과 ConfiremDialog 컴포넌트고 ConfirmDialog가 Button을 포함하고 있다.  
 
-```
+```js
 function Button(props) {
   return(
     <button className={`bg-${props.color}`}>
@@ -63,7 +248,7 @@ function ConfirmDialog(props) {
 ```
   
 ConfirmDialog 컴포넌트를 엘리먼트의 형태로 표시하면 다음과 같습니다.
-```
+```js
 {
   type: 'div',
   props: {
@@ -138,13 +323,13 @@ ConfirmDialog 컴포넌트를 엘리먼트의 형태로 표시하면 다음과 �
 * 이후 Hook이라는 개념이 나오면서 최근에는 함수형 컴포넌트를 주로 사용한다.
 * 예전에 작성된 코드나 문서들이 클래스형 컴포넌트를 사용하고 있기 때문에 클래스형 컴포넌트와 컴포넌트의 생명주기에 관해서도 공부해야 한다.
 #### 2. 함수형 컴포넌트
-```
+```js
 fucntion Welcome(props) {
   return <h1>안녕, {props.name}</h1>
 }
 ```
 #### 3. 클래스형 컴포넌트
-```
+```js
 class Welcome extends React.Component {
   render() {
     return <h1>안녕, {props.name}</h1>
@@ -158,7 +343,7 @@ class Welcome extends React.Component {
 
 #### 5. 컴포넌트의 렌더링
 * 렌터링의 과정은 다음 코드와 같다 (구형방식)
-```
+```js
 fucntion Welcome(props) {
   return <h1>안녕, {props.name}</h1>
 }
@@ -213,7 +398,7 @@ https://ko.reactjs.org/docs/introducing-jsx.html
 4. 이 파일에 다음과 같이 코딩한다  
 
 Book.jsx
-```
+```js
 import React from "react"
 
 function Book(props) {
@@ -228,7 +413,7 @@ function Book(props) {
 export default Book
 ```
 Library.jsx
-```
+```js
 import React from "react"
 
 function Book(props) {
@@ -250,7 +435,7 @@ export default Book
 4. 이제 npm start로 app을 실행하고 결과를 확인한다
 
 index.js
-```
+```js
 import Library from './chapter_03/Library'; // 2. Library 컨포넌트 import
 
 
