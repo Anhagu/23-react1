@@ -1,4 +1,162 @@
 # 이재형
+## [2023-05-11, 11주차 수업 내용]
+
+### <하위 컴포넌트에서 State 공유하기>
+* 섭씨온도 값을 props로 받아서 물이 끓는지 안끓는지 문자열로 출력해주는 컴포넌트
+```js
+function BoilingVerdict(props){
+    if(props.celsius >=100){
+        return<p>물이 끓습니다</p>;
+    }
+    return <p>물이 끓지 않습니다.</p>;
+}
+```
+```js
+function Calculator(props){
+    const[temperature,setTemperature]=useState('');
+    const handleChange =(event)=>{
+        setTemperature(event.target.value);
+    }
+    return(
+        <fieldset>
+        <legend>섭씨 온도를 입력하세요:</legend>
+        <input
+        value={temperature}
+        onChange={handleChange}/>
+        <BoilingVerdict
+        celsius={parseFloat(temperature)}/>
+        </fieldset>
+    )
+}
+```
+
+### <입력 컴포넌트 추출하기>
+* 온도를 입력하기 위한 컴포넌트
+```js
+const scaleNames={
+    c:'섭씨',
+    f:'화씨'
+};
+function TemperatureInput(props){
+     const[temperature,setTemperature]=useState('');
+    const handleChange =(event)=>{
+        setTemperature(event.target.value);
+    
+}
+return(
+    <fieldset>
+    <legend>온도를 입력해주세요(단위:{scaleNames[props.scale]}):</legend>
+    <input value={temperature}onChange={handleChange}/>
+    </fieldset>
+)
+}
+```
+* 섭씨 또는 화씨로 입력 가능하도록 하는 컴포넌트
+```js
+function Calculator(props){
+    return(
+        <div>
+        <TemperatureInput scale="c"/>
+        <TemperatureInput scale="f"/>
+        </div>
+    )
+}
+```
+
+### <온도 변환 함수 작성하기>
+*섭씨 온도와 화씨 온도값을 동기화 시키기 위해서 각각 변환하는 함수를 작성해야 한다. 
+
+```js
+function toCelsius(fahrenheit) {
+  return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celcius) {
+  return (celsius * 9 / 5) + 32;
+}
+```
+* 위에서 만든 함수를 호출하는 함수
+```js
+function tryConvert(temperature,convert){
+    const input=parseFloat(temperature);
+    if(Number.isNaN(input)){
+        return'';
+    }
+    const output =convert(input);
+    const rounded=Math.round(output*1000)/1000;
+    return rounded.toString();
+}
+```
+
+* 만약 숫자가 아닌 값을 입력하면 empty string을 리턴하도록 예외 처리 하는 방식
+```js
+tryConvert('abc', toCelsius); // 'empty string 을 리턴'
+tryConvert('10.22', toFahrenheit); // '50.396을 리턴'
+```
+### <Shared State 적용하기>
+* 먼저 TemperatureInput 컴포넌트에서 온도 값을 가져오는 부분을 아래와 같이 수정해야 한다.
+```js
+return(
+    // 변경 전:<input value={temperature} onChange={handleChange}/>
+    <input value={props.temperature}onChange={handleChange}/>
+)
+```
+입력된 값이 변경되었을때 상위 컴포넌트로 변경된 값을 전달해야하는데, 이를 위해 handleChange() 함수를 다음과 같이 변경해야 한다.
+```js
+const handleChange = (event) => {
+  // 변경 전: setTemperature(event.target.value);
+  props.onTemperatureChange(event.target.value);
+}
+```
+
+```js
+function TemperatureInput(props){
+    const handelChange=(event)=>{
+        props.onTemperatureChange(event.target.value);
+    }
+
+    return(
+      <fieldset>
+        <legend>온도를 입력해 주세요(단위:{scaleNames[props.scale]}):</legend>
+
+        <input value={props.temperature} onChange={handleChange} />
+      </fieldset>
+    )
+  }
+```
+### <Calculator 컴포넌트 변경하기>
+* 변경된 TemperatureInput 컴포넌트에 맞춰서 변경된 Calculator 컴포넌트이다.
+```javascript
+function Calculator(props){
+    const [temperature,setTemperature]=useState('');
+    const [scale,setScale]=useState('c');
+
+    const handleCelsiusChange=(temperature)=>{
+        setScale('c');
+        setTemperature(temperature);
+    }
+
+    const handleFahrenheitChange=(temperature)=>{
+        setScale('f');
+        setTemperature(temperature);
+    }
+
+    const celsius=scale==='f'?tryConvert(temperature,toCelsius):temperature;
+    const fahrenheit=scale==='c'?tryConvert(temperature,toFahrenheit):temperature;
+
+    return(
+        <div>
+        <TemperatureInput scale="c" temperature={celsius} onTemperatureChange={handleCelsiusChange}/>
+        <TemperatureInput scale="f" temperature={fahrenheit} onTemperatureChange={handleFahrenheitChange}/>
+        <BoilingVerdict celcius={parseFloat(celcius)}/>
+        </div>
+    )
+}
+```
+* 우선 state로 temperature의 scale을 선언하여 온도 값과 단위를 각각 저장하도록 하였고, 이 온도와 단위를 이용하여 변환 함수를 통해 섭씨온도와 화씨 온도를 구해서 사용한다.
+* 각 컴포넌트가 state에 값을 갖고 있는 것이 아닌 공통된 상위 컴포넌트로 올려서 공유하는 방법을 사용하면 리액트에서 더욱 간결하고 효율적인 개발을 할 수 있다.
+
+---
 ## [2023-05-04, 10주차 수업 내용]
 
 ###  <리스트와 키란?>
